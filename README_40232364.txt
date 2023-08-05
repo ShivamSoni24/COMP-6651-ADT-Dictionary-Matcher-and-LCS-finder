@@ -1,0 +1,22 @@
+The given code provides a solution for matching words from a dictionary with a user-defined regular expression (regex) pattern 
+and finding the Longest Common Subsequence (LCS) among the matched words. The program reads the input from a text file named "input.txt," 
+where the first line contains an integer 'n' representing the number of words in the dictionary, followed by 'n' lines containing the 
+dictionary words. The last line of the file contains the regex pattern 'R' that will be used for matching.
+
+The DictionaryMatcher class performs the following tasks:
+1. Load the dictionary and regex pattern from the input file.
+2. Match the words from the dictionary with the regex pattern using case-insensitive matching.
+3. Store the matched words in lexicographic order.
+4. Display the matched words.
+5. Find the LCS of the top three matched words (if available) and write it to an output file named "output.txt."
+
+The matching process has a time complexity of O(n * m), where 'n' is the number of words in the dictionary, and 'm' is the maximum length 
+of the word from the words. The LCS calculation for two words has a time complexity of O(m * n), and for three words, it has a time 
+complexity of O(S^3), where 'S' is the maximum length of the words involved in the LCS calculation.
+
+The code utilizes C++ STL libraries, such as regex for pattern matching and vector for data storage. The user is required to provide the 
+input file in the specified format, and the program will execute the matching and LCS finding tasks accordingly. The resulting matched words 
+and LCS are displayed on the console, and the LCS is also written to the output file for future reference.
+
+For more detailed execution please go to the github repository using following link 
+https://github.com/ShivamSoni24/COMP-6651-ADT-Dictionary-Matcher-and-LCS-finder
