@@ -16,7 +16,7 @@ complexity of O(S^3), where 'S' is the maximum length of the words involved in t
 
 The code utilizes C++ STL libraries, such as regex for pattern matching and vector for data storage. The user is required to provide the 
 input file in the specified format, and the program will execute the matching and LCS finding tasks accordingly. The resulting matched words 
-and LCS are displayed on the console, and the LCS is also written to the output file for future reference.
+and LCS are displayed on the console, and the LCS is also written to the output file.
 
 For more detailed execution please go to the github repository using following link 
 https://github.com/ShivamSoni24/COMP-6651-ADT-Dictionary-Matcher-and-LCS-finder
