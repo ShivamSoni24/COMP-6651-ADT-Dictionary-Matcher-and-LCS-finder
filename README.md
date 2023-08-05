@@ -30,11 +30,26 @@ Please
 
 - The first line contains an integer `n`, representing the number of words in the dictionary.
 - The next `n` lines contain the words that form the dictionary.
-- The last line contains the regex pattern (`*pl.` in this example) to match against the dictionary words.
+- The last line contains the regex pattern (`..pl.` in this example) to match against the dictionary words.
 
 4. Run the program.
 
 5. The program will display the words that match the given regex pattern in lexicographic order and write the LCS of at most 3 matched words to the output file (`output.txt`).
+
+console output
+```
+The words that match to the given regex pattern are as follow:
+
+Apple
+Apply
+Maple
+
+The output is successfully stored in output.txt
+```
+output.txt
+```
+pl
+```
 
 ### Algorithm/High-level Program Flow
 
@@ -52,11 +67,18 @@ Please
 
 The time complexity of the main operations in this code is as follows:
 
-- `loadDictionary`: O(n), where n is the number of words in the dictionary.
-- `matchRegex`: O(n * m), where n is the number of words in the dictionary, and m is the average length of the words.
-- `lcsOf2Words`: O(m * n), where m and n are the lengths of the two words.
-- `lcsOf3Words`: O(m * n * p), where m, n, and p are the lengths of the three words.
-- `findLCSofAtmost3Words`: O(k^3), where k is the number of matched words.
-- `sort`: O(k * log(k)), where k is the number of matched words.
+- `loadDictionary`: $O(n)$, where n is the number of words in the dictionary.
+- `matchRegex`: $O(n * m)$, where n is the number of words in the dictionary, and m maximum length of the word from all the words.
+- `lcsOf2Words`: $O(m * n)$, where m and n are the lengths of the two words.
+- `lcsOf3Words`: $O(m * n * p)$, where m, n, and p are the lengths of the three words.
+- `sort`: $O(k * log(k))$, where k is the number of matched words.
 
-Overall, the dominant time complexity is O(n * m) due to `matchRegex`, where n is the number of words in the dictionary and m is the average length of the words. The other operations have smaller complexities and do not significantly affect the overall time complexity. However, keep in mind that the complexity for regex matching may vary depending on the complexity of the regex pattern itself.
+Overall, the dominant terms have time complexity $O(n * m)$ due to `matchRegex`, where n is the number of words in the dictionary and m is the maximum length of the word from all the words. The LCS calculation for 2 words, `lcsOf2Words`, has a time complexity of $O(m * n)$, where m and n are the lengths of the two words being compared. Similarly, the LCS calculation for 3 words, `lcsOf3Words`, has a time complexity of $O(S^3)$, where S is the maximum length of the words involved in the LCS calculation.
+
+Considering all these factors, the overall time complexity of the program is
+$O(n * m + S^3)$
+- $n$ = number of words in the dictionary
+- $m$ = maximum length of the word in the dictionary
+- $S$ = maximum length of the word in the LCS
+
+which depends on the number of words, their lengths, and the complexity of the regex pattern used in matchRegex. The complexity for regex matching may also vary depending on the complexity of the regex pattern itself.
