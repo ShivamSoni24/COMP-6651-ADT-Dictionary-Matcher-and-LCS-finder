@@ -5,6 +5,15 @@ COMP 6651 - Algorithms Design Techniques Programming Project
 
 This C++ program reads a list of words from an input file, generates Trie of all words and performs regular expression matching on those words, and finds the Longest Common Subsequence (LCS) among the top 3 matched words. The LCS is then written to an output file.
 
+## Contents
+1. [Dependencies](#dependencies)
+2. [How to Use](#how-to-use)
+3. [Algorithm/High-Level Flow: Dictionary Matcher and LCS Finder](#algorithmhigh-level-flow-dictionary-matcher-and-lcs-finder)
+4. [Function Descriptions](#function-descriptions)
+5. [Correctness of the Algorithm](#correctness-of-the-algorithm)
+6. [Optimality of the Algorithm](#optimality-of-the-algorithm)
+7. [Time Complexity](#time-complexity)
+
 ## Dependencies
 
 This program uses the C++ Standard Library and requires a C++ compiler that supports C++11 features.
@@ -16,40 +25,38 @@ This program uses the C++ Standard Library and requires a C++ compiler that supp
 2. Place the input file (`input.txt`) in the same directory as the program executable.
 
 3. Open the `input.txt` file and provide the following input in the specified format:
+    - The first line contains an integer `n`, representing the number of words in the dictionary.
+    - The next `n` lines contain the words that form the dictionary.
+    - The last line contains the regex pattern (`..pl.` in this example) to match against the dictionary words.
 
-```
-6
-Apple
-Maple
-Apply
-Couple
-Pledge
-Please
-..pl.
-```
-
-- The first line contains an integer `n`, representing the number of words in the dictionary.
-- The next `n` lines contain the words that form the dictionary.
-- The last line contains the regex pattern (`..pl.` in this example) to match against the dictionary words.
+      ```
+      6
+      Apple
+      Maple
+      Apply
+      Couple
+      Pledge
+      Please
+      ..pl.
+      ```
 
 4. Run the program.
 
 5. The program will display the words that match the given regex pattern in lexicographic order and write the LCS of at most 3 matched words to the output file (`output.txt`).
+    - console output
+      ```
+      The words that match to the given regex pattern are as follow:
 
-console output
-```
-The words that match to the given regex pattern are as follow:
+      apple
+      apply
+      maple
 
-apple
-apply
-maple
-
-The output is successfully stored in output.txt
-```
-output.txt
-```
-apl
-```
+      The output is successfully stored in output.txt
+      ```
+    - output.txt
+      ```
+      apl
+      ```
 
 ## Algorithm/High-Level Flow: Dictionary Matcher and LCS Finder
 
