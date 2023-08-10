@@ -1,0 +1,7 @@
+5
+Sun
+Moon
+Planets
+Galaxies
+Universe
+.*s

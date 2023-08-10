@@ -1,15 +1,15 @@
 # COMP-6651-ADT-Dictionary-Matcher-and-LCS-finder
 COMP 6651 - Algorithms Design Techniques Programming Project
 
-## Dictionary Matcher with LCS Finder
+# Dictionary Matcher with LCS Finder
 
-This C++ program reads a list of words from an input file, performs regular expression matching on those words, and finds the Longest Common Subsequence (LCS) among the matched words. The matched words are then sorted lexicographically, and the LCS is written to an output file.
+This C++ program reads a list of words from an input file, generates Trie of all words and performs regular expression matching on those words, and finds the Longest Common Subsequence (LCS) among the top 3 matched words. The LCS is then written to an output file.
 
-### Dependencies
+## Dependencies
 
 This program uses the C++ Standard Library and requires a C++ compiler that supports C++11 features.
 
-### How to Use
+## How to Use
 
 1. Clone the repository or copy the code from the `main.cpp` file.
 
@@ -40,45 +40,142 @@ console output
 ```
 The words that match to the given regex pattern are as follow:
 
-Apple
-Apply
-Maple
+apple
+apply
+maple
 
 The output is successfully stored in output.txt
 ```
 output.txt
 ```
-pl
+apl
 ```
 
-### Algorithm/High-level Program Flow
+## Algorithm/High-Level Flow: Dictionary Matcher and LCS Finder
 
-1. Create a class `DictionaryMatcher` to encapsulate the functionalities related to loading the dictionary, matching the regex, finding LCS, and displaying the results.
+1. Start
 
-2. The `DictionaryMatcher` class contains a private member `vector<string> dictionary` to store the words from the input file, `regex regexPattern` to store the regex pattern, and `vector<string> matchedWords` to store the words that match the regex.
+2. Define TrieNode class:
+   - Represents a node in the trie structure.
 
-3. The program uses dynamic programming to find the LCS of 2 and 3 words.
+3. Define DictionaryMatcher class (derived from TrieNode):
+   - Represents the main functionality for dictionary matching and LCS finding.
+   - Load the dictionary from input file and initialize members.
+   - Match words against regex pattern using trie traversal.
+   - Find LCS of matched words.
 
-4. The `findLCSofAtmost3Words` function checks the number of matched words and calls the respective LCS functions accordingly.
+4. Inside main function:
+   - Initialize input and output filenames.
+   - Create an instance of DictionaryMatcher named 'matcher'.
+   - Load the dictionary and perform regex matching:
+     - Call 'loadDictionary' on 'matcher':
+       - Open input file.
+       - Read the number of words (n).
+       - For each word:
+         - Read and trim the word.
+         - Insert the word into the trie.
+       - Read and compile the regex pattern.
+       - Close input file.
+       - Call 'matchRegex' to perform trie traversal and regex matching. If 3 matches are found terminate regex matching.
 
-5. The program reads the input from `input.txt`, matches the words to the regex pattern, displays the matched words, and finds the LCS before writing it to `output.txt`.
+   - Display matched words:
+     - Call 'displayMatches' on 'matcher':
+       - Check if any words were matched.
+       - If matched, display them on the console(this contains top 3 words that are lexicographically  sorted).
 
-### Time Complexity
+   - Find LCS and save it to the output file:
+     - Call 'findLCS' on 'matcher':
+       - Determine the LCS based on the number of matched words.
+       - Open output file.
+       - Write the LCS to the output file.
+       - Close output file.
 
-The time complexity of the main operations in this code is as follows:
+5. End
 
-- `loadDictionary`: $O(n)$, where n is the number of words in the dictionary.
-- `matchRegex`: $O(n * m)$, where n is the number of words in the dictionary, and m maximum length of the word from all the words.
-- `lcsOf2Words`: $O(m * n)$, where m and n are the lengths of the two words.
-- `lcsOf3Words`: $O(m * n * p)$, where m, n, and p are the lengths of the three words.
-- `sort`: $O(k * log(k))$, where k is the number of matched words.
+## Function Descriptions
+This section contains the list of all the functions generated in the code and their brief descriptions.
 
-Overall, the dominant terms have time complexity $O(n * m)$ due to `matchRegex`, where n is the number of words in the dictionary and m is the maximum length of the word from all the words. The LCS calculation for 2 words, `lcsOf2Words`, has a time complexity of $O(m * n)$, where m and n are the lengths of the two words being compared. Similarly, the LCS calculation for 3 words, `lcsOf3Words`, has a time complexity of $O(S^3)$, where S is the maximum length of the words involved in the LCS calculation.
+1. `TrieNode` class:
+   - Private friend class `DictionaryMatcher`.
+   - Private members: `children` array, `isEndOfWord` flag.
+   - Constructor to initialize children array and isEndOfWord flag.
 
-Considering all these factors, the overall time complexity of the program is
-$O(n * m + S^3)$
+2. `DictionaryMatcher` class (derived from `TrieNode`):
+   - Private members: `regexPattern`, `matchedWords`, `successfulMatches`.
+   - Private member functions:
+     - `trim`: Remove leading and trailing spaces from a string.
+     - `insertWord`: Insert a word into the trie structure.
+     - `matchWithRegex`: Match a word against the regex pattern.
+     - `traverseTrieAndMatch`: Traverse the trie, match words, and collect successful matches.
+     - `matchRegex`: Initiate the matching process.
+     - `lcsOf2Words`: Find the Longest Common Subsequence (LCS) of two words.
+     - `lcsOf3Words`: Find the LCS of three words.
+     - `findLCSofAtmost3Words`: Calls respective LCS functions to find LCS of matched words.
+
+   - Public member functions:
+     - Constructor: Initialize regexPattern and successfulMatches.
+     - `loadDictionary`: Load dictionary and regex pattern from the input file.
+     - `displayMatches`: Display words that match the regex pattern.
+     - `findLCS`: Find LCS and save it to the output file.
+
+3. In the main function:
+   - Set input and output filenames.
+   - Create an instance of `DictionaryMatcher` named `matcher`.
+   - Call `loadDictionary` on `matcher` to load the dictionary and perform regex matching.
+   - Call `displayMatches` on `matcher` to display the matched words.
+   - Call `findLCS` on `matcher` to find LCS of matched words and save it to the output file.
+
+## Correctness of the Algorithm:
+- The algorithm ensures that all dictionary words are correctly loaded and trimmed, eliminating extraneous spaces that may lead to incorrect matches.
+- The case insensitivity handling ensures that dictionary words are treated uniformly, regardless of their original casing.
+- The insertion of words into the trie guarantees the preservation of lexicographical ordering, which aids in correctly finding the top 3 matches.
+- The regex pattern compilation and error handling ensure that the provided pattern is valid and ready for matching.
+- The trie traversal and regex matching process ensures that only valid words are matched against the regex pattern, preventing false positives.
+- Selecting the top 3 lexicographically correct matches through trie traversal guarantees the correct ordering, as the trie inherently stores words in a lexicographical manner.
+
+## Optimality of the Algorithm:
+- The algorithm scans all words from the input file to build the trie, ensuring that the entire dictionary is considered.
+- The lowercase conversion of words is performed to facilitate case-insensitive matching without introducing unnecessary complexity.
+- The natural ordering of the trie structure ensures that the first 3 matches encountered through trie traversal are the top 3 lexicographically correct matches.
+- The algorithm saves at most 3 matches, which bounds the output size and reduces memory usage.
+- The LCS calculation is optimized by considering the number of matched words, eliminating unnecessary LCS computations.
+- Error handling for input and output files ensures reliable I/O operations, preventing unexpected behavior.
+
+## Time Complexity
+
+The time complexity of the algorithm can be analyzed based on the major operations it performs:
+
+1. Loading Dictionary and Building Trie:
+    - For each word in the dictionary (n words):
+        - Trimming takes $O(k)$, where k is the maximum length of a word.
+        - Inserting a word into the trie takes $O(k)$.
+    - Total time complexity for loading dictionary and building the trie: $O(n * k)$
+
+2. Regex Matching and Trie Traversal:
+    - Traversing the trie for each word takes $O(k)$ for a single word.
+    - The regex matching is performed during the trie traversal, which has a time complexity proportional to the length of the word being matched (k).
+    - Since we only consider a maximum of 3 successful matches, the total time complexity for regex matching and trie traversal is $O(3 * n * k)$, which simplifies to $O(n * k)$.
+
+3. Finding LCS:
+    - Finding the LCS of two strings with lengths m and n has a time complexity of $O(m * n)$.
+    - In the worst case, when all matched words are used to find the LCS (3 words), the time complexity for finding the LCS of all 3 words is $O(p * q * r)$ with lengths p, q and r respectively
+
+Therefore, the overall time complexity of the algorithm can be summarized as:
+- Building Trie: $O(n * k)$
+- Regex Matching and Trie Traversal: $O(n * k)$
+- Finding LCS: $O(k^3)$
+
+**$Time$ $complexity = O(n * k) + O(n * k) + O(k^3) 
+                = O(n * k + k^3)$**
+                
 - $n$ = number of words in the dictionary
-- $m$ = maximum length of the word in the dictionary
-- $S$ = maximum length of the word in the LCS
+- $k$ = maximum length of the word in the dictionary
 
-which depends on the number of words, their lengths, and the complexity of the regex pattern used in matchRegex. The complexity for regex matching may also vary depending on the complexity of the regex pattern itself.
+The space complexity of the algorithm mainly comes from the trie structure, which uses space proportional to the total number of characters in the dictionary. Other data structures like vectors and regex objects contribute to the space complexity as well, but they are usually smaller compared to the trie for larger dictionaries.
+
+Therefore, the overall space complexity of the algorithm can be summarized as:
+- Building Trie: $O(n * k)$
+
+**$Space$ $complexity = O(n * k)$**
+- $n$ = number of words in the dictionary
+- $k$ = maximum length of the word in the dictionary

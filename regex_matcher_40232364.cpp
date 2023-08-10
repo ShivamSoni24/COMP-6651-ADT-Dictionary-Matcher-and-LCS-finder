@@ -8,22 +8,51 @@
 using namespace std;
 
 /**
+ * @class TrieNode
+ * @brief A class representing a node in a trie structure. It is used as a building block for the
+ *        DictionaryMatcher class to efficiently store and manage a dictionary of words.
+*/
+class TrieNode {
+    // Allow DictionaryMatcher to access private members
+    friend class DictionaryMatcher;
+    private:
+        // This private array of child nodes representing possible characters
+        // Usage: The children array is utilized to efficiently store child nodes representing
+        // possible characters. Each element corresponds to a character's presence in the node.
+        TrieNode* children[26];
+        // A flag indicating if this node represents the end of a word
+        // Usage: The isEndOfWord flag is set to true if the current node represents the end of a word.
+        bool isEndOfWord;
+
+        /**
+         * @brief Constructor for TrieNode class.
+         * Initializes the TrieNode object with child pointers and end-of-word flag.
+         */
+        TrieNode() {
+            for (int i = 0; i < 26; ++i) {
+                children[i] = nullptr;
+            }
+            isEndOfWord = false;
+        }
+};
+
+/**
  * @class DictionaryMatcher
  * @brief A class that loads a dictionary from a file, matches words against a regex pattern,
  *        finds Longest Common Subsequence (LCS) of matched words, and saves the LCS to an
  *        output file.
  */
-class DictionaryMatcher {
+class DictionaryMatcher : public TrieNode{
     private:
-        // This private member stores the list of words from the input dictionary.
-        // Usage: It is used to store and access the dictionary words.
-        vector<string> dictionary;
         // This private member stores the regular expression pattern provided in the input.
         // Usage: It is used to match the dictionary words against the given regex pattern.
         regex regexPattern;
         // This private member stores the words that match the regex pattern after matching.
         // Usage: It is used to collect the matching words for further processing.
         vector<string> matchedWords;
+        // This private member stores is counter for keeping track of matches.
+        // Usage: It is used to store counter to match just 3 regex strings.
+        int successfulMatches;
 
         /**
          * @brief Removes leading and trailing spaces from the given string.
@@ -33,6 +62,73 @@ class DictionaryMatcher {
         void trim(string& str) {
             str.erase(remove_if(str.begin(), str.end(), ::isspace), str.end());
         }
+
+        /**
+         * @brief Inserts a word into the trie structure.
+         * @param word The word to be inserted into the trie.
+         * @return None.
+         */
+        void insertWord(const std::string& word) {
+            TrieNode* current = this;
+            for (char c : word) {
+                int index = c - 'a';
+                if (!current->children[index]) {
+                    current->children[index] = new TrieNode();
+                }
+                current = current->children[index];
+            }
+            current->isEndOfWord = true;
+        }
+
+        /**
+         * @brief Matches a word against a regular expression pattern.
+         * @param word The word to be matched against the regular expression pattern.
+         * @return True if the word matches the pattern, otherwise false.
+         */
+        bool matchWithRegex(const string& word) {
+            return regex_match(word, regexPattern);
+        }
+
+        /**
+         * @brief Traverses the trie, matches words with a regex pattern, and collects successful matches.
+         * 
+         * This function performs a depth-first traversal of the trie structure, beginning from the provided
+         * node (or the root if no node is specified). For each encountered node representing the end of a
+         * word, it attempts to match the word formed by the path from the root to the current node against
+         * the stored regular expression pattern. If the word matches the pattern and the successful match
+         * count is below 3, the word is added to the list of matchedWords, and the successful match count
+         * is incremented. The traversal continues for each child node.
+         * 
+         * @param node The starting node for traversal. If not provided, the root node is used.
+         * @param prefix The accumulated prefix formed during traversal from the root to the current node.
+         */
+        void traverseTrieAndMatch(TrieNode* node = nullptr, string prefix = "") {
+            if (node == nullptr) {
+                node = this;
+                prefix = "";
+            }
+
+            if (node->isEndOfWord) {
+                if (successfulMatches < 3 && matchWithRegex(prefix)) {
+                    matchedWords.push_back(prefix);
+                    successfulMatches++;
+                }
+            }
+
+            for (int i = 0; i < 26; ++i) {
+                if (node->children[i]) {
+                    char c = 'a' + i;
+                    traverseTrieAndMatch(node->children[i], prefix + c);
+                }
+            }
+        }
+
+        /**
+         * @brief Initiates the process of matching words against a regex pattern.
+         */
+        void matchRegex() {
+            traverseTrieAndMatch();
+        }
         
         /**
          * @brief Finds the Longest Common Subsequence (LCS) of two given words.
@@ -41,9 +137,6 @@ class DictionaryMatcher {
          * @return The LCS of the two words as a string.
          */
         string lcsOf2Words(const string& W1, const string& W2) {
-            // transform(W1.begin(), W1.end(), W1.begin(), ::tolower);
-            // transform(W2.begin(), W2.end(), W2.begin(), ::tolower);
-
             const int m = W1.length();
             const int n = W2.length();
 
@@ -93,10 +186,6 @@ class DictionaryMatcher {
          * @return The LCS of the three words as a string.
          */
         string lcsOf3Words(const string& W1, const string& W2, const string& W3) {
-            // transform(W1.begin(), W1.end(), W1.begin(), ::tolower);
-            // transform(W2.begin(), W2.end(), W2.begin(), ::tolower);
-            // transform(W3.begin(), W3.end(), W3.begin(), ::tolower);
-
             const int m = W1.length();
             const int n = W2.length();
             const int p = W3.length();
@@ -151,7 +240,7 @@ class DictionaryMatcher {
             return lcs;
         }
 
-         /**
+        /**
          * @brief Calls respective LCS functions to find LCS of matched words.
          * @param None
          * @return The LCS of at most three matched words as a string.
@@ -171,6 +260,19 @@ class DictionaryMatcher {
         }
     
     public:
+        /**
+         * @brief Constructor for the DictionaryMatcher class.
+         * 
+         * This constructor initializes a new instance of the DictionaryMatcher class. It sets the
+         * regexPattern to an empty string and the successfulMatches count to 0, preparing the
+         * instance for loading dictionary words, matching with regex patterns, and processing
+         * successful matches.
+         */
+        DictionaryMatcher() {
+            regexPattern = "";
+            successfulMatches = 0;
+        }
+
         /**
          * @brief Loads dictionary from the input file.
          * @param filename The filename of the input text file containing the dictionary and regex pattern.
@@ -192,7 +294,10 @@ class DictionaryMatcher {
                 string word;
                 getline(inputFile, word);
                 trim(word);
-                dictionary.push_back(word);
+                for (char& c : word) {
+                    c = std::tolower(c);
+                }
+                insertWord(word);
             }
 
             // Save the regex pattern
@@ -204,20 +309,10 @@ class DictionaryMatcher {
                 cout << "There is error in regular expression."<< endl;
                 exit(0);
             }
-        }
-        
-        /**
-         * @brief Matches the dictionary words against the regex pattern and saves the matched words.
-         * @param None (The dictionary vector and regexPattern should be already set).
-         * @return None. The matchedWords vector is populated with words that match the regex pattern.
-         */
-        void matchRegex() {
-            for(const string& word : dictionary) {
-                if(regex_match(word, regexPattern)) {
-                    matchedWords.push_back(word);
-                }
-            }
-            sort(matchedWords.begin(), matchedWords.end());
+
+            inputFile.close();
+            // Match the regex from the trie.
+            matchRegex();
         }
 
         /**
@@ -253,7 +348,6 @@ class DictionaryMatcher {
             if(outputFile.is_open()) {
                 outputFile << lcs;
                 outputFile.close();
-
                 cout << "\nThe output is successfully stored in " + filename << endl;
             }
             else {
@@ -277,7 +371,6 @@ int main() {
     // Generate the instance of DictionaryMatcher and perform the respective operations
     DictionaryMatcher matcher;
     matcher.loadDictionary(input);
-    matcher.matchRegex();
     matcher.displayMatches();
     matcher.findLCS(output);
     return 0;

@@ -1,18 +1,55 @@
 The given code provides a solution for matching words from a dictionary with a user-defined regular expression (regex) pattern 
 and finding the Longest Common Subsequence (LCS) among the matched words. The program reads the input from a text file named "input.txt," 
 where the first line contains an integer 'n' representing the number of words in the dictionary, followed by 'n' lines containing the 
-dictionary words. The last line of the file contains the regex pattern 'R' that will be used for matching.
+dictionary words. The last line of the file contains the regex pattern 'R' that will be used for matching. The program is implemented 
+in C++.
 
-The DictionaryMatcher class performs the following tasks:
-1. Load the dictionary and regex pattern from the input file.
-2. Match the words from the dictionary with the regex pattern using case-insensitive matching.
-3. Store the matched words in lexicographic order.
-4. Display the matched words.
-5. Find the LCS of the top three matched words (if available) and write it to an output file named "output.txt."
+The program follows a systematic approach to accomplish its tasks:
+1. TrieNode Class: The TrieNode class is defined to represent a node in the Trie structure. It includes a private friend class 
+	DictionaryMatcher, a children array (for possible characters), and an isEndOfWord flag to indicate the end of a word.
+2. DictionaryMatcher Class: This class is derived from TrieNode and encapsulates the core functionality. It has private members such as 
+	regexPattern (for the regular expression), matchedWords (for storing matching words), and successfulMatches (for tracking successful
+	 matches). Private member functions handle word insertion, regex matching, LCS computation, and more.
+3. Main Function: In the main function, the program performs the following steps:
+	Set input and output filenames.
+	Create an instance of DictionaryMatcher.
+	Load the dictionary and perform regex matching using the loadDictionary method.
+	Display the matched words using the displayMatches method.
+	Find the LCS of matched words and save it to the output file using the findLCS method.
 
-The matching process has a time complexity of O(n * m), where 'n' is the number of words in the dictionary, and 'm' is the maximum length 
-of the word from the words. The LCS calculation for two words has a time complexity of O(m * n), and for three words, it has a time 
-complexity of O(S^3), where 'S' is the maximum length of the words involved in the LCS calculation.
+Correctness of algorithm
+The algorithm demonstrates correctness through its systematic approach and careful handling of various aspects:
+1. Loading and Trimming: The algorithm correctly loads dictionary words, trims them to remove leading and trailing spaces, and converts them to 
+	lowercase to ensure uniformity.
+2. Trie Insertion: The TrieNode class ensures that words are inserted correctly into the trie, preserving lexicographical ordering. This aids 
+	in accurate matching and finding the LCS.
+3. Regex Pattern Handling: The algorithm successfully compiles the provided regex pattern and performs error handling to handle invalid patterns.
+4. Matching and LCS Computation: The algorithm ensures that only valid words are matched against the regex pattern, avoiding false positives. 
+	It selects the top 3 lexicographically correct matches, and computes the LCS accurately.
+
+Optimality of Algorithm
+1. Full Dictionary Consideration: The algorithm scans and processes all words from the input dictionary, ensuring comprehensive coverage.
+2. Case Insensitivity: By converting words to lowercase, the algorithm guarantees that case differences do not affect matching, enhancing 
+	accuracy without introducing unnecessary complexity.
+3. Trie Ordering: The Trie structure inherently stores words in lexicographical order, simplifying the process of finding the top 3 
+	lexicographically correct matches.
+4. Memory Management: The algorithm saves at most 3 matches, reducing memory usage and ensuring efficient data handling.
+5. LCS Computation: The algorithm avoids unnecessary LCS computations, calculating the LCS only for the relevant number of matched words.
+
+Time Complexity Analysis
+The algorithm's time complexity is determined by the major operations it performs:
+1. Loading Dictionary and Building Trie: The time complexity for this step is O(n * k), where n is the number of words in the dictionary and k
+	 is the maximum length of a word.
+2. Regex Matching and Trie Traversal: The time complexity for this step is O(n * k) due to traversing the trie and performing regex matching.
+3. Finding LCS: The time complexity for finding the LCS of matched words is O(k^3), where k is the maximum length of the words.
+
+The overall time complexity is O(n * k + k^3), where n is the number of words and k is the maximum word length.
+
+Space Complexity Analysis
+The space complexity of the algorithm mainly arises from the Trie structure and other data structures used:
+1. Building Trie: The space complexity for building the Trie is O(n * k), where n is the number of words and k is the maximum word length.
+
+The overall space complexity is O(n * k), where n is the number of words and k is the maximum word length.
 
 The code utilizes C++ STL libraries, such as regex for pattern matching and vector for data storage. The user is required to provide the 
 input file in the specified format, and the program will execute the matching and LCS finding tasks accordingly. The resulting matched words 
