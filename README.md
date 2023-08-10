@@ -11,7 +11,7 @@ This program uses the C++ Standard Library and requires a C++ compiler that supp
 
 ## How to Use
 
-1. Clone the repository or copy the code from the `main.cpp` file.
+1. Clone the repository or copy the code from the `regex_matcher_40232364.cpp` file.
 
 2. Place the input file (`input.txt`) in the same directory as the program executable.
 
