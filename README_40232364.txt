@@ -40,10 +40,11 @@ Time Complexity Analysis
 The algorithm's time complexity is determined by the major operations it performs:
 1. Loading Dictionary and Building Trie: The time complexity for this step is O(n * k), where n is the number of words in the dictionary and k
 	 is the maximum length of a word.
-2. Regex Matching and Trie Traversal: The time complexity for this step is O(n * k) due to traversing the trie and performing regex matching.
+2. Regex Matching and Trie Traversal: The time complexity for this step is O(n * k * l) due to traversing the trie it's n * k and performing 
+	 regex matching using dynamic programming takes O(k * l) where l is length of regex pattern.
 3. Finding LCS: The time complexity for finding the LCS of matched words is O(k^3), where k is the maximum length of the words.
 
-The overall time complexity is O(n * k + k^3), where n is the number of words and k is the maximum word length.
+The overall time complexity is O(n * k * l + k^3), where n is the number of words and k is the maximum word length and l is length of regex pattern.
 
 Space Complexity Analysis
 The space complexity of the algorithm mainly arises from the Trie structure and other data structures used:

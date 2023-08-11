@@ -44,6 +44,9 @@ class TrieNode {
  */
 class DictionaryMatcher : public TrieNode{
     private:
+        // This private member stores the regular expression string provided in the input.
+        // Usage: It is used to match the trie words against the given regex string.
+        string regexString;
         // This private member stores the regular expression pattern provided in the input.
         // Usage: It is used to match the dictionary words against the given regex pattern.
         regex regexPattern;
@@ -86,7 +89,39 @@ class DictionaryMatcher : public TrieNode{
          * @return True if the word matches the pattern, otherwise false.
          */
         bool matchWithRegex(const string& word) {
-            return regex_match(word, regexPattern);
+            // return regex_match(word, regexattern);
+            int m = word.length();
+            int n = regexString.length();
+            
+            // Create a 2D table to store the matching results
+            vector<vector<bool>> dp(m + 1, vector<bool>(n + 1, false));
+            
+            // Base case is empty string
+            dp[0][0] = true;
+            
+            for (int j = 1; j <= n; j++) {
+                if (regexString[j - 1] == '*') {
+                    dp[0][j] = dp[0][j - 2];
+                }
+            }
+            
+            // Fill the remaining positions of the table
+            for (int i = 1; i <= m; i++) {
+                for (int j = 1; j <= n; j++) {
+                    if (word[i - 1] == regexString[j - 1] || regexString[j - 1] == '.') {
+                        dp[i][j] = dp[i - 1][j - 1];
+                    }
+                    else if (regexString[j - 1] == '*') {
+                        dp[i][j] = dp[i][j - 2]; // case 1
+                        
+                        if (regexString[j - 2] == '.' || regexString[j - 2] == word[i - 1]) {
+                            dp[i][j] = dp[i][j] || dp[i - 1][j]; // case 2
+                        }
+                    }
+                }
+            }
+            
+            return dp[m][n];
         }
 
         /**
@@ -264,19 +299,21 @@ class DictionaryMatcher : public TrieNode{
          * @brief Constructor for the DictionaryMatcher class.
          * 
          * This constructor initializes a new instance of the DictionaryMatcher class. It sets the
-         * regexPattern to an empty string and the successfulMatches count to 0, preparing the
+         * regexString and regexPattern to an empty string and the successfulMatches count to 0, preparing the
          * instance for loading dictionary words, matching with regex patterns, and processing
          * successful matches.
          */
         DictionaryMatcher() {
+            regexString = "";
             regexPattern = "";
             successfulMatches = 0;
+            matchedWords.clear();
         }
 
         /**
          * @brief Loads dictionary from the input file.
          * @param filename The filename of the input text file containing the dictionary and regex pattern.
-         * @return None. The dictionary vector is populated with words, and regexPattern is set with the provided regex.
+         * @return None. The trie is populated with words, and regexPattern is set with the provided regex.
          */
         void loadDictionary(const string& filename) {
             // open file and save the words
@@ -300,8 +337,6 @@ class DictionaryMatcher : public TrieNode{
                 insertWord(word);
             }
 
-            // Save the regex pattern
-            string regexString;
             getline(inputFile, regexString);
             try {
                 regexPattern = regex(regexString, regex_constants::icase);
@@ -337,10 +372,15 @@ class DictionaryMatcher : public TrieNode{
          * @return The LCS result is written to the output text file.
          */
         void findLCS(const string& filename) {
-            string lcs = findLCSofAtmost3Words();
-
-            if(lcs.size() == 0) {
-                lcs = "There is no LCS for top 3 words sorted lexicographically";
+            string lcs;
+            if(matchedWords.size() == 0) {
+                lcs = "There are no matching words for the given regular expression.";
+            }
+            else {
+                lcs = findLCSofAtmost3Words();
+                if(lcs.size() == 0) {
+                    lcs = "There is no LCS for top 3 words sorted lexicographically";
+                }
             }
 
             // open output file and write LCS

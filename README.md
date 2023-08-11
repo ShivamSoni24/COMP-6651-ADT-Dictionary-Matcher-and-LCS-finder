@@ -83,7 +83,7 @@ This program uses the C++ Standard Library and requires a C++ compiler that supp
          - Insert the word into the trie.
        - Read and compile the regex pattern.
        - Close input file.
-       - Call 'matchRegex' to perform trie traversal and regex matching. If 3 matches are found terminate regex matching.
+       - Call 'matchRegex' to perform trie traversal and regex matching. Regex matching is performed through dynamic programming and it supports `'.'`, `'*'` and alphabets `[a-z][A-Z]`. If 3 matches are found terminate regex matching.
 
    - Display matched words:
      - Call 'displayMatches' on 'matcher':
@@ -112,7 +112,7 @@ This section contains the list of all the functions generated in the code and th
    - Private member functions:
      - `trim`: Remove leading and trailing spaces from a string.
      - `insertWord`: Insert a word into the trie structure.
-     - `matchWithRegex`: Match a word against the regex pattern.
+     - `matchWithRegex`: Match a word against the regex pattern with the help of dynamic programming to match the string.
      - `traverseTrieAndMatch`: Traverse the trie, match words, and collect successful matches.
      - `matchRegex`: Initiate the matching process.
      - `lcsOf2Words`: Find the Longest Common Subsequence (LCS) of two words.
@@ -159,9 +159,9 @@ The time complexity of the algorithm can be analyzed based on the major operatio
     - Total time complexity for loading dictionary and building the trie: $O(n * k)$
 
 2. Regex Matching and Trie Traversal:
-    - Traversing the trie for each word takes $O(k)$ for a single word.
-    - The regex matching is performed during the trie traversal, which has a time complexity proportional to the length of the word being matched (k).
-    - Since we only consider a maximum of 3 successful matches, the total time complexity for regex matching and trie traversal is $O(3 * n * k)$, which simplifies to $O(n * k)$.
+    - Traversing the trie for all word takes $O(n * k)$ where $n$ is number of words in Trie and $k$ is the maximum length of the word.
+    - The regex matching and dynamic programming table creation have a time complexity of $O(k * l)$, where $k$ is the maximum length of the word and $l$ is the length of the regex pattern.
+    - Although the algorithm only consider a maximum of 3 successful matches, the total time complexity for regex matching and trie traversal can go upto $O(n * k * l)$ (In a case where the matches are at the very end).
 
 3. Finding LCS:
     - Finding the LCS of two strings with lengths m and n has a time complexity of $O(m * n)$.
@@ -169,14 +169,15 @@ The time complexity of the algorithm can be analyzed based on the major operatio
 
 Therefore, the overall time complexity of the algorithm can be summarized as:
 - Building Trie: $O(n * k)$
-- Regex Matching and Trie Traversal: $O(n * k)$
+- Regex Matching and Trie Traversal: $O(n * k * l)$
 - Finding LCS: $O(k^3)$
 
-**$Time$ $complexity = O(n * k) + O(n * k) + O(k^3) 
-                = O(n * k + k^3)$**
+**$Time$ $complexity = O(n * k) + O(n * k * l) + O(k^3) 
+                = O(n * k * l + k^3)$**
                 
 - $n$ = number of words in the dictionary
 - $k$ = maximum length of the word in the dictionary
+- $l$ = length of the regex pattern
 
 The space complexity of the algorithm mainly comes from the trie structure, which uses space proportional to the total number of characters in the dictionary. Other data structures like vectors and regex objects contribute to the space complexity as well, but they are usually smaller compared to the trie for larger dictionaries.
 
