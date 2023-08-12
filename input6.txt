@@ -1,0 +1,10 @@
+8
+apple
+apple
+apple
+apple
+apricot
+banana
+apricot
+cherry
+.*a.*

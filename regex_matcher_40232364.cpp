@@ -20,9 +20,9 @@ class TrieNode {
         // Usage: The children array is utilized to efficiently store child nodes representing
         // possible characters. Each element corresponds to a character's presence in the node.
         TrieNode* children[26];
-        // A flag indicating if this node represents the end of a word
-        // Usage: The isEndOfWord flag is set to true if the current node represents the end of a word.
-        bool isEndOfWord;
+        // A flag indicating if this node represents the end of a word and stores count of words
+        // Usage: The isEndOfWord flag is set to 0 in the beginning and incremented if duplicate words are present.
+        int isEndOfWord;
 
         /**
          * @brief Constructor for TrieNode class.
@@ -32,7 +32,7 @@ class TrieNode {
             for (int i = 0; i < 26; ++i) {
                 children[i] = nullptr;
             }
-            isEndOfWord = false;
+            isEndOfWord = 0;
         }
 };
 
@@ -80,7 +80,7 @@ class DictionaryMatcher : public TrieNode{
                 }
                 current = current->children[index];
             }
-            current->isEndOfWord = true;
+            current->isEndOfWord++;
         }
 
         /**
@@ -145,12 +145,18 @@ class DictionaryMatcher : public TrieNode{
 
             if (node->isEndOfWord) {
                 if (successfulMatches < 3 && matchWithRegex(prefix)) {
-                    matchedWords.push_back(prefix);
-                    successfulMatches++;
+                    int n = node->isEndOfWord;
+                    while(n!=0 && successfulMatches < 3) {
+                        matchedWords.push_back(prefix);
+                        successfulMatches++;
+                        n--;
+                    }
                 }
             }
 
             for (int i = 0; i < 26; ++i) {
+                if(successfulMatches >= 2)
+                    return;
                 if (node->children[i]) {
                     char c = 'a' + i;
                     traverseTrieAndMatch(node->children[i], prefix + c);

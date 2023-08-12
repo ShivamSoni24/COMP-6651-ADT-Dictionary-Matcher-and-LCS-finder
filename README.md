@@ -104,8 +104,8 @@ This section contains the list of all the functions generated in the code and th
 
 1. `TrieNode` class:
    - Private friend class `DictionaryMatcher`.
-   - Private members: `children` array, `isEndOfWord` flag.
-   - Constructor to initialize children array and isEndOfWord flag.
+   - Private members: `children` array, `isEndOfWord` counter.
+   - Constructor to initialize children array and isEndOfWord counter which saves the number of occurences of the given word to support duplicates.
 
 2. `DictionaryMatcher` class (derived from `TrieNode`):
    - Private members: `regexPattern`, `matchedWords`, `successfulMatches`.
