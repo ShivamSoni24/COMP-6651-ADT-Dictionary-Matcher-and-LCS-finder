@@ -155,7 +155,7 @@ class DictionaryMatcher : public TrieNode{
             }
 
             for (int i = 0; i < 26; ++i) {
-                if(successfulMatches >= 2)
+                if(successfulMatches >= 3)
                     return;
                 if (node->children[i]) {
                     char c = 'a' + i;
@@ -318,14 +318,15 @@ class DictionaryMatcher : public TrieNode{
 
         /**
          * @brief Loads dictionary from the input file.
-         * @param filename The filename of the input text file containing the dictionary and regex pattern.
+         * @param inputfile The filename of the input text file containing the dictionary and regex pattern.
+         * @param outputfile The filename of the output text file to handle error.
          * @return None. The trie is populated with words, and regexPattern is set with the provided regex.
          */
-        void loadDictionary(const string& filename) {
+        void loadDictionary(const string& inputfile, const string& outputfile) {
             // open file and save the words
-            ifstream inputFile(filename);
+            ifstream inputFile(inputfile);
             if(!inputFile.is_open()) {
-                cout << "Error in opening the input file: " << filename << endl;
+                cout << "Error in opening the input file: " << inputfile << endl;
                 return;
             }
 
@@ -347,8 +348,17 @@ class DictionaryMatcher : public TrieNode{
             try {
                 regexPattern = regex(regexString, regex_constants::icase);
             } catch (const std::regex_error& error) {
-                cout << "There is error in regular expression."<< endl;
-                exit(0);
+                ofstream outputFile(outputfile);
+                if(outputFile.is_open()) {
+                    string errorMsg = "There is error in regular expression.";
+                    outputFile << errorMsg;
+                    outputFile.close();
+                    cout << errorMsg << endl;
+                    exit(0);
+                }
+                else {
+                    cout << "Error in opening the output file: " << outputfile << endl;
+                }
             }
 
             inputFile.close();
@@ -416,7 +426,7 @@ int main() {
 
     // Generate the instance of DictionaryMatcher and perform the respective operations
     DictionaryMatcher matcher;
-    matcher.loadDictionary(input);
+    matcher.loadDictionary(input, output);
     matcher.displayMatches();
     matcher.findLCS(output);
     return 0;

@@ -1,0 +1,6 @@
+4
+cherry
+c
+aabd
+bbbcd
+a*b*cd*

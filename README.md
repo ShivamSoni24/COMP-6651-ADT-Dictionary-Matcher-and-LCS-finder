@@ -83,7 +83,7 @@ This program uses the C++ Standard Library and requires a C++ compiler that supp
          - Insert the word into the trie.
        - Read and compile the regex pattern.
        - Close input file.
-       - Call 'matchRegex' to perform trie traversal and regex matching. Regex matching is performed through dynamic programming and it supports `'.'`, `'*'` and alphabets `[a-z][A-Z]`. If 3 matches are found terminate regex matching.
+       - Call 'matchRegex' to perform trie traversal and regex matching. Regex matching is performed through dynamic programming and it supports `'.'`, `'*'` and alphabets `[a-z][A-Z]`. If 3 matches are found terminate trie traversal.
 
    - Display matched words:
      - Call 'displayMatches' on 'matcher':
