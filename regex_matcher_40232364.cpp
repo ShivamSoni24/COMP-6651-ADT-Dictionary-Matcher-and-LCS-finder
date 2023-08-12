@@ -182,7 +182,8 @@ class DictionaryMatcher : public TrieNode{
             const int n = W2.length();
 
             // Create a 2-dimensional array to store the lengths of LCS
-            int dp[m + 1][n + 1];
+            vector<vector<int>> dp(m+1, vector<int>(n+1));
+            // int dp[m + 1][n + 1];
 
             // Initialize the base case (empty strings)
             for (int i = 0; i <= m; ++i)
@@ -232,7 +233,7 @@ class DictionaryMatcher : public TrieNode{
             const int p = W3.length();
 
             // Create a 3-dimensional array to store the lengths of LCS
-            int dp[m + 1][n + 1][p + 1];
+            vector<vector<vector<int>>> dp(m + 1, vector<vector<int>>(n + 1, vector<int>(p + 1)));
 
             // Initialize the base case (empty strings)
             for (int i = 0; i <= m; ++i)
